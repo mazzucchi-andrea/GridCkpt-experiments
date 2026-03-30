@@ -13,6 +13,10 @@ Accepted to ACM SIGSIM PADS 2026
 
 ## Requirements
 
+* x86_64 CPU
+* 16GB of RAM
+* Linux with Kernel Version >= 4.17
+
 The hardware/software configuration used by the authors is:
 
 * CPU: 2 * Intel Xeon Silver 4210
@@ -21,24 +25,33 @@ The hardware/software configuration used by the authors is:
 
 ## Dependencies
 
-* For running tests: ```bash, gcc, make```
-* For processing data and generating figures: ```bash, gcc, gnuplot```
-  
-## Instructions
+For running experiments, processing data and generating figures: 
+* ```bash```        (https://www.gnu.org/software/bash/)
+* ```gcc```         (https://gcc.gnu.org/)
+* ```make```        (https://www.gnu.org/software/make/)
+* ```numactl```     (https://github.com/numactl/numactl)
+* ```bc```          (https://www.gnu.org/software/bc/)
+* ```awk```         (https://www.gnu.org/software/gawk/)
+* ```gnuplot```     (https://www.gnuplot.info/)
+* ```ImageMagick``` (https://imagemagick.org)
+
+Run ```./dep.sh``` to check and install all the dependecies.
+
+## Kick the tires instructions
 
 1. Clone the repository: ```git clone https://github.com/mazzucchi-andrea/GridCkpt-experiments```
-2. Move to the artifact folder: ```cd GridCkpt```
-3. run ```./exp.sh```
+2. Move to the artifact folder: ```cd GridCkpt-experiments```
+3. Run small tests (~8m): ```./exp.sh kick```
 
 ## Structure of the artifact
 
 ```
 GridCkpt/
  |-- Checkpoint/    /* Instrumentation Cost Overhead Experiment */
- |-- PARSIR/        /* PDES engine */
- |-- plots/         /* source code of the simulator                           */                            */
- |-- exp.sh         /* script for bulding and launching experiments  */
- |-- LICENSE        /* license          */
+ |-- PARSIR/        /* PDES engine with PHOLD and PCS Experiments*/
+ |-- figures/       /* outputs  */
+ |-- exp.sh         /* script for bulding and launching experiments */
+ |-- LICENSES/      /* License folder */
  |-- README.md      /* This file */
 ```
 
@@ -71,29 +84,30 @@ To run an experiment <exp> and process its results, type the following:
 
 To run all experiments and process their results at once, type the following:
 
-```nohup ./exp.sh run_all &```
+```nohup ./exp.sh &```
 
 The expected runtime of each experiment is detailed in the following table:
 
 | Experiment   | Runtime |
 |--------------|---------|
-| instr_cost   |         |
-| phold        | ~63m    |
-| pcs          | ~63m    |
-| **Total**    | **~ **  |
-
+| instr_cost   | ~3m     |
+| phold        | ~5h 15m |
+| pcs          | ~5h 15m |
+| **Total**    | **~10h 30m** |
 
 Once all experiments have been run, you can find each figure at:
 
-| Figure       | Path |
-|--------------|---------|
-| 4           | plots/instr_cost/fig4.png       |
-| 5           | plots/instr_cost/fig5.png       |
-| 6           | plots/phold/                    |
-| 7           | plots/pcs/                      |
+| Figure      | Path              |
+|-------------|-------------------|
+| 4           | figures/fig4.png  |
+| 5           | figures/fig5.png  |
+| 6           | figures/fig6.png  |
+| 7           | figures/fig7.png  |
 
 
 ## Notes
 All scripts have been tested by running them from the following path:
 
   ```GridCkpt/```
+
+pcs and phold runs using 25%,50% and 100% of the available CPUs

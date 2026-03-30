@@ -1,0 +1,97 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+LOOKAHEAD=(0.25)
+
+# Detect total CPU threads and compute 25%, 50%, 100%
+# Detect total CPU threads
+TOTAL_THREADS=$(nproc)
+
+THREADS=($TOTAL_THREADS)
+RUN=1
+WARMUP=10
+DURATION=60
+OBJECTS=(1024)
+M=(1)
+SIM=./bin/PARSIR-simulator
+
+# --- Helper ---
+die() { echo "Error: $*" >&2; exit 1; }
+
+# --- Pre-flight checks ---
+[[ -f "$SIM" ]]      || die "Simulator binary not found: $SIM"
+[[ -x "$SIM" ]]      || die "Simulator binary is not executable: $SIM"
+[[ -d "build" ]]     || die "'build' directory not found — is this the right working directory?"
+command -v make    &>/dev/null || die "'make' is not installed or not in PATH"
+command -v gcc     &>/dev/null || die "'gcc' is not installed or not in PATH"
+command -v gnuplot &>/dev/null || die "'gnuplot' is not installed or not in PATH"
+command -v awk     &>/dev/null || die "'awk' is not installed or not in PATH"
+[[ -f "get_phold_data.c" ]]  || die "Source file 'get_phold_data.c' not found"
+[[ -f "plot_phold.gp" ]]     || die "Gnuplot template 'plot_phold.gp' not found"
+
+parse_output() {
+    awk '
+    /^SPEC_WINDOWS:/      {sw=$2}
+    /^ROLLBACKS:/         {rb=$2}
+    /^TOTAL_EVENTS:/      {te=$2}
+    /^COMMITTED_EVENTS:/  {ce=$2}
+    /^FILTERED_EVENTS:/   {fe=$2}
+    END {printf "%s,%s,%s,%s,%s\n",sw,rb,te,ce,fe}'
+}
+
+format_params() {
+    local out=()
+    for kv in "$@"; do
+        out+=("${kv#*=}")
+    done
+    IFS=,; echo "${out[*]}"
+}
+
+run_series() {
+    local target=$1
+    local csv=$2
+    shift 2
+    local args=("$@")
+
+    echo "Compiling $target ${args[*]}"
+    make -C build "$target" BENCHMARK=1 "${args[@]}" WARMUP=$WARMUP DURATION=$DURATION >/dev/null \
+        || die "make failed for target '$target' with args: ${args[*]}"
+
+    local ckpt_type=${target#*_}
+
+    for ((i=0; i<RUN; i++)); do
+        echo "Run $((i+1))/$RUN : $target ${args[*]}"
+
+        output=$($SIM) \
+            || die "Simulator failed on run $((i+1))/$RUN for target '$target' with args: ${args[*]}"
+
+        parsed=$(printf "%s\n" "$output" | parse_output) \
+            || die "parse_output failed on run $((i+1))/$RUN for target '$target'"
+
+        [[ -n "$parsed" ]] \
+            || die "parse_output returned empty result on run $((i+1))/$RUN for target '$target' — check simulator output format"
+
+        params=$(format_params "${args[@]}") \
+            || die "format_params failed for args: ${args[*]}"
+
+        echo "$ckpt_type,$params,$parsed" >> "$csv" \
+            || die "Failed to write to CSV '$csv'"
+    done
+}
+
+# --- CSV header ---
+echo "CKPT_TYPE,THREADS,SPEC_WINDOW,OBJECTS,M,SPEC_WINDOWS,ROLLBACKS,TOTAL_EVENTS,COMMITTED_EVENTS,FILTERED_EVENTS" > phold.csv \
+    || die "Failed to create phold.csv"
+
+# --- Simulation runs ---
+for t in "${THREADS[@]}"; do
+    for l in "${LOOKAHEAD[@]}"; do
+        for o in "${OBJECTS[@]}"; do
+            for m in "${M[@]}"; do
+                run_series phold_grid_ckpt  phold.csv THREADS=$t LOOKAHEAD=$l OBJECTS=$o M=$m
+                run_series phold_chunk_ckpt phold.csv THREADS=$t LOOKAHEAD=$l OBJECTS=$o M=$m
+                run_series phold_full_ckpt  phold.csv THREADS=$t LOOKAHEAD=$l OBJECTS=$o M=$m
+            done
+        done
+    done
+done
