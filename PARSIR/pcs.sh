@@ -1,4 +1,10 @@
 #!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Andrea Mazzucchi <andrea.mazzucchi@tutamail.com>
+# SPDX-FileCopyrightText: 2026 Francesco Quaglia <francesco.quaglia@uniroma2.it>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 set -euo pipefail
 
 LOOKAHEAD=(0.25 0.5 1.0)
@@ -84,12 +90,14 @@ for o in "${OBJECTS[@]}"; do
 for m in "${MIT[@]}"; do
 for t in "${THREADS[@]}"; do
     ./get_pcs_data -r $RUN -t $t -s $l -o $o -m $m
-done 
+done
     gnuplot -c plot_pcs.gp $l $m
     rm pcs_plot_data.csv;          
 done
 done
 done
+
+rm -f get_pcs_data
 
 cd plots/pcs
 montage \

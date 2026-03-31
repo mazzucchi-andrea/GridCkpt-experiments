@@ -1,3 +1,8 @@
+# SPDX-FileCopyrightText: 2026 Andrea Mazzucchi <andrea.mazzucchi@tutamail.com>
+# SPDX-FileCopyrightText: 2026 Francesco Quaglia <francesco.quaglia@uniroma2.it>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 CC = gcc 
 CFLAGS = -c -Wall -Wextra -Wpedantic -I../../include/ -I./ -lm -Wimplicit-fallthrough
 CHUNK_CKPT_FLAGS = -pie -fpie -I../../MVM_CHUNK/include -DSPECULATION

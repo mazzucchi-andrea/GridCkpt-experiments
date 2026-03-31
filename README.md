@@ -1,3 +1,13 @@
+<!--
+SPDX-FileCopyrightText: 2026 Andrea Mazzucchi <andrea.mazzucchi@tutamail.com>
+SPDX-FileCopyrightText: 2026 Francesco Quaglia <francesco.quaglia@uniroma2.it>
+
+SPDX-License-Identifier: GPL-3.0-or-later
+-->
+
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) 
+[![REUSE status](https://api.reuse.software/badge/github.com/applejag/kubectl-klock)](https://api.reuse.software/info/github.com/applejag/kubectl-klock)
+
 # Reproducibility PADS 2026
 
 This documents describes how to reproduce the results discussed in the paper:
@@ -57,7 +67,8 @@ GridCkpt/
 
 ## License
 
-The software is released with the GPL 3 license.
+The software is released under the GPL-3.0 license.
+The licensing is compliant with version 3.3 of the REUSE specification (https://reuse.software/spec-3.3/).
 
 ## Article claims
 
@@ -110,4 +121,4 @@ All scripts have been tested by running them from the following path:
 
   ```GridCkpt/```
 
-pcs and phold runs using 25%,50% and 100% of the available CPUs
+pcs and phold runs using 25%, 50% and 100% of the available CPUs

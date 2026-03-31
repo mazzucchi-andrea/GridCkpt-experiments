@@ -1,4 +1,10 @@
 #!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Andrea Mazzucchi <andrea.mazzucchi@tutamail.com>
+# SPDX-FileCopyrightText: 2026 Francesco Quaglia <francesco.quaglia@uniroma2.it>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 set -euo pipefail
 
 LOOKAHEAD=(0.25 0.5 1.0)
@@ -36,6 +42,8 @@ done
 done
 done
 
+rm -f get_phold_data
+
 cd plots/phold
 montage \
   throughput_m_1_spec_window_0.25_obj1024.png \
@@ -68,6 +76,8 @@ done
 done
 done
 done
+
+rm -f get_pcs_data
 
 cd plots/pcs
 montage \

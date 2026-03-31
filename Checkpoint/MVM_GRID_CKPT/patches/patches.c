@@ -1,3 +1,10 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Andrea Mazzucchi <andrea.mazzucchi@tutamail.com>
+ * SPDX-FileCopyrightText: 2026 Francesco Quaglia <francesco.quaglia@uniroma2.it>
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 #include <fcntl.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -129,7 +136,7 @@ void user_defined(instruction_record *actual_instruction, patch *actual_patch) {
         ret = system(buffer);
 
         // put the binary on a file
-        sprintf(buffer, "cd %s; ./provide_binary %s > final-binary",
+        sprintf(buffer, "cd %s; ./provide_binary.sh %s > final-binary",
                 user_defined_dir, user_defined_temp_obj_file);
         ret = system(buffer);
 
@@ -197,7 +204,7 @@ int ckpt_patch(instruction_record *actual_instruction, patch *actual_patch) {
     ret = system(buffer);
 
     // put the binary on a file
-    sprintf(buffer, "cd %s; ./provide_binary %s > final-binary",
+    sprintf(buffer, "cd %s; ./provide_binary.sh %s > final-binary",
             user_defined_dir, user_defined_temp_obj_file);
     ret = system(buffer);
 

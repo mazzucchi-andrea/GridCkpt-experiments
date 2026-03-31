@@ -1,4 +1,10 @@
 #!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Andrea Mazzucchi <andrea.mazzucchi@tutamail.com>
+# SPDX-FileCopyrightText: 2026 Francesco Quaglia <francesco.quaglia@uniroma2.it>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 set -euo pipefail
 
 LOOKAHEAD=(0.25 0.5 1.0)
@@ -89,19 +95,21 @@ done
 done
 done
 
+rm -f get_phold_data
+
 cd plots/phold
 montage \
-  throughput_obj1024_spec_windows0.25_m1.png \
-  throughput_obj1024_spec_windows0.5_m1.png \
-  throughput_obj1024_spec_windows1.0_m1.png \
-  rollbacks_per_epoch_obj1024_spec_windows0.25_m1.png \
-  rollbacks_per_epoch_obj1024_spec_windows0.5_m1.png \
-  rollbacks_per_epoch_obj1024_spec_windows1.0_m1.png \
-  throughput_obj1024_spec_windows0.25_m100.png \
-  throughput_obj1024_spec_windows0.5_m100.png \
-  throughput_obj1024_spec_windows1.0_m100.png \
-  rollbacks_per_epoch_obj1024_spec_windows0.25_m100.png \
-  rollbacks_per_epoch_obj1024_spec_windows0.5_m100.png \
-  rollbacks_per_epoch_obj1024_spec_windows1.0_m100.png \
+  throughput_m_1_spec_window_0.25_obj1024.png \
+  throughput_m_1_spec_window_0.5_obj1024.png \
+  throughput_m_1_spec_window_1.0_obj1024.png \
+  rollbacks_m_1_spec_window_0.25_obj1024.png \
+  rollbacks_m_1_spec_window_0.5_obj1024.png \
+  rollbacks_m_1_spec_window_1.0_obj1024.png \
+  throughput_m_100_spec_window_0.25_obj1024.png \
+  throughput_m_100_spec_window_0.5_obj1024.png \
+  throughput_m_100_spec_window_1.0_obj1024.png \
+  rollbacks_m_100_spec_window_0.25_obj1024.png \
+  rollbacks_m_100_spec_window_0.5_obj1024.png \
+  rollbacks_m_100_spec_window_1.0_obj1024.png \
   -tile 3x4 -geometry +2+2 fig6.png
 

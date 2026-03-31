@@ -1,4 +1,10 @@
-#!/usr/bin/env bash
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2026 Andrea Mazzucchi <andrea.mazzucchi@tutamail.com>
+# SPDX-FileCopyrightText: 2026 Francesco Quaglia <francesco.quaglia@uniroma2.it>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 set -euo pipefail
 
 LOOKAHEAD=(0.25)
@@ -19,8 +25,6 @@ SIM=./bin/PARSIR-simulator
 die() { echo "Error: $*" >&2; exit 1; }
 
 # --- Pre-flight checks ---
-[[ -f "$SIM" ]]      || die "Simulator binary not found: $SIM"
-[[ -x "$SIM" ]]      || die "Simulator binary is not executable: $SIM"
 [[ -d "build" ]]     || die "'build' directory not found — is this the right working directory?"
 command -v make    &>/dev/null || die "'make' is not installed or not in PATH"
 command -v gcc     &>/dev/null || die "'gcc' is not installed or not in PATH"

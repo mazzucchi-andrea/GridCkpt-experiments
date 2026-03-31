@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# SPDX-FileCopyrightText: 2026 Andrea Mazzucchi <andrea.mazzucchi@tutamail.com>
+# SPDX-FileCopyrightText: 2026 Francesco Quaglia <francesco.quaglia@uniroma2.it>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # --- Requirements Checking ---
 
 required_commands=(gcc make bc awk gnuplot numactl)
@@ -60,7 +65,7 @@ run_pcs() {
   ./pcs.sh
   cd ..
   mkdir -p figures
-  mv PARSIR/pcs/phold/fig7.png figures/fig7.png
+  mv PARSIR/plots/pcs/fig7.png figures/fig7.png
 }
 
 # --- Remove Artifacts ---
@@ -68,21 +73,28 @@ run_pcs() {
 run_clean() {
   echo "Removing all artifacts produced..."
   rm -rf ./figures
-  rm -rf ./Checkpoint/plots
-  rm -f ./Checkpoint/MVM_CHUNK/chunk_repeat_test_results.csv
-  rm -f ./Checkpoint/MVM_CHUNK/chunk_test_results.csv
-  rm -f ./Checkpoint/MVM_GRID_CKPT/ckpt_repeat_test_results.csv
-  rm -f ./Checkpoint/MVM_GRID_CKPT/ckpt_test_results.csv
-  rm -rf ./PARSIR/plots
-  rm -f ./PARSIR/phold.csv
-  rm -f ./PARSIR/pcs.csv
+  cd Checkpoint
+  rm -rf ./plots
+  cd MVM_CHUNK
+  rm -f ./chunk_repeat_test_results.csv ./chunk_test_results.csv
+  make clean
+  cd ..
+  cd MVM_GRID_CKPT
+  rm -f ./ckpt_repeat_test_results.csv ./ckpt_test_results.csv
+  make clean
+  cd ../..
+  cd ./PARSIR
+  rm -rf ./plots
+  rm -f ./phold.csv
+  rm -f ./pcs.csv
+  cd build
+  make clean
 }
 
 # --- Main ---
 
 if [ $# -eq 0 ]; then
   echo "No argument provided. Running ALL tests..."
-  run_clean
   run_instr_cost
   run_phold
   run_pcs

@@ -1,3 +1,8 @@
+# SPDX-FileCopyrightText: 2026 Andrea Mazzucchi <andrea.mazzucchi@tutamail.com>
+# SPDX-FileCopyrightText: 2026 Francesco Quaglia <francesco.quaglia@uniroma2.it>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 set datafile separator comma
 set datafile missing "NaN"
 set terminal png size 1200,800 font 'Arial,26' noenhanced

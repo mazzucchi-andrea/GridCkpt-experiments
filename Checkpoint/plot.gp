@@ -1,3 +1,8 @@
+# SPDX-FileCopyrightText: 2026 Andrea Mazzucchi <andrea.mazzucchi@tutamail.com>
+# SPDX-FileCopyrightText: 2026 Francesco Quaglia <francesco.quaglia@uniroma2.it>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 set datafile separator ","
 # Extract values from the second line of the CSV (skipping the header)
 _size = system("tail -n +2 plot_data.csv | head -n 1 | cut -d',' -f1")
