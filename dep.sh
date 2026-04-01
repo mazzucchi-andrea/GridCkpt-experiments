@@ -34,7 +34,7 @@ DEPS=(
     "bash|bash|bash|bash|Bash|https://www.gnu.org/software/bash/"
     "gcc|gcc|gcc|gcc|GCC|https://gcc.gnu.org/"
     "make|make|make|make|Make|https://www.gnu.org/software/make/"
-    "numactl|numactl|numactl|numactl|numactl|https://github.com/numactl/numactl"
+    "numa.h|libnuma-dev|numactl-devel|numactl|libnuma|https://github.com/numactl/numactl"
     "bc|bc|bc|bc|bc|https://www.gnu.org/software/bc/"
     "awk|gawk|gawk|gawk|awk (gawk)|https://www.gnu.org/software/gawk/"
     "gnuplot|gnuplot|gnuplot|gnuplot|gnuplot|https://www.gnuplot.info/"
@@ -95,12 +95,25 @@ main() {
     for entry in "${DEPS[@]}"; do
         IFS='|' read -r binary apt_pkg dnf_pkg pacman_pkg name url <<< "$entry"
 
-        if command -v "$binary" &>/dev/null; then
-            ok "${name} $(command -v "$binary")"
-            found+=("$name")
+        # Check if it's a header file (ends with .h) or a binary
+        if [[ "$binary" == *.h ]]; then
+            # Check for header file in standard include paths
+            if [[ -f "/usr/include/$binary" ]] || [[ -f "/usr/local/include/$binary" ]]; then
+                ok "${name} found"
+                found+=("$name")
+            else
+                warn "${name} not found  →  ${url}"
+                missing+=("$entry")
+            fi
         else
-            warn "${name} not found  →  ${url}"
-            missing+=("$entry")
+            # Check for binary in PATH
+            if command -v "$binary" &>/dev/null; then
+                ok "${name} $(command -v "$binary")"
+                found+=("$name")
+            else
+                warn "${name} not found  →  ${url}"
+                missing+=("$entry")
+            fi
         fi
     done
 
@@ -137,12 +150,23 @@ main() {
         esac
 
         if install_pkg "$pm" "$pkg" "$name"; then
-            # Verify the binary is now reachable
-            if command -v "$binary" &>/dev/null; then
-                ok "${name} installed successfully."
+            # Verify the binary/header is now available
+            if [[ "$binary" == *.h ]]; then
+                # Check for header file
+                if [[ -f "/usr/include/$binary" ]] || [[ -f "/usr/local/include/$binary" ]]; then
+                    ok "${name} installed successfully."
+                else
+                    warn "${name} package installed but header '${binary}' not found in standard paths."
+                    failed+=("$name")
+                fi
             else
-                warn "${name} package installed but binary '${binary}' not found in PATH."
-                failed+=("$name")
+                # Check for binary in PATH
+                if command -v "$binary" &>/dev/null; then
+                    ok "${name} installed successfully."
+                else
+                    warn "${name} package installed but binary '${binary}' not found in PATH."
+                    failed+=("$name")
+                fi
             fi
         else
             err "Failed to install ${name} (package: ${pkg})."
