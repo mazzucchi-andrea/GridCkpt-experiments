@@ -78,38 +78,3 @@ done
 done
 done
 done
-
-rm -rf plots/phold
-mkdir -p plots/phold
-
-gcc -O3 get_phold_data.c -o get_phold_data -lm
-for l in "${LOOKAHEAD[@]}"; do
-for o in "${OBJECTS[@]}"; do
-for m in "${M[@]}"; do
-for t in "${THREADS[@]}"; do
-    ./get_phold_data -r $RUN -t $t -s $l -o $o -m $m
-done 
-    gnuplot -c plot_phold.gp $m $l
-    rm phold_plot_data.csv;          
-done
-done
-done
-
-rm -f get_phold_data
-
-cd plots/phold
-montage \
-  throughput_m_1_spec_window_0.25_obj1024.png \
-  throughput_m_1_spec_window_0.5_obj1024.png \
-  throughput_m_1_spec_window_1.0_obj1024.png \
-  rollbacks_m_1_spec_window_0.25_obj1024.png \
-  rollbacks_m_1_spec_window_0.5_obj1024.png \
-  rollbacks_m_1_spec_window_1.0_obj1024.png \
-  throughput_m_100_spec_window_0.25_obj1024.png \
-  throughput_m_100_spec_window_0.5_obj1024.png \
-  throughput_m_100_spec_window_1.0_obj1024.png \
-  rollbacks_m_100_spec_window_0.25_obj1024.png \
-  rollbacks_m_100_spec_window_0.5_obj1024.png \
-  rollbacks_m_100_spec_window_1.0_obj1024.png \
-  -tile 3x4 -geometry +2+2 fig6.png
-

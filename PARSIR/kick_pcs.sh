@@ -5,32 +5,20 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-set -euo pipefail
+THREADS=($(nproc))
 
-LOOKAHEAD=(0.25)
-
-# Detect total CPU threads
-TOTAL_THREADS=$(nproc)
-
-THREADS=($TOTAL_THREADS)
 RUN=1
 WARMUP=10
 DURATION=60
+
+LOOKAHEAD=(0.25)
 OBJECTS=(1024)
 MIT=(0.4)
+
 SIM=./bin/PARSIR-simulator
 
 # --- Helper ---
 die() { echo "Error: $*" >&2; exit 1; }
-
-# --- Pre-flight checks ---
-[[ -d "build" ]]    || die "'build' directory not found — is this the right working directory?"
-command -v make    &>/dev/null || die "'make' is not installed or not in PATH"
-command -v gcc     &>/dev/null || die "'gcc' is not installed or not in PATH"
-command -v gnuplot &>/dev/null || die "'gnuplot' is not installed or not in PATH"
-command -v awk     &>/dev/null || die "'awk' is not installed or not in PATH"
-[[ -f "get_pcs_data.c" ]] || die "Source file 'get_pcs_data.c' not found"
-[[ -f "plot_pcs.gp" ]]    || die "Gnuplot template 'plot_pcs.gp' not found"
 
 parse_output() {
     awk '

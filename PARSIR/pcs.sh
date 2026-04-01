@@ -81,31 +81,3 @@ done
 done
 done
 
-rm -rf plots/pcs
-mkdir -p plots/pcs
-
-gcc -O3 get_pcs_data.c -o get_pcs_data -lm
-for l in "${LOOKAHEAD[@]}"; do
-for o in "${OBJECTS[@]}"; do
-for m in "${MIT[@]}"; do
-for t in "${THREADS[@]}"; do
-    ./get_pcs_data -r $RUN -t $t -s $l -o $o -m $m
-done
-    gnuplot -c plot_pcs.gp $l $m
-    rm pcs_plot_data.csv;          
-done
-done
-done
-
-rm -f get_pcs_data
-
-cd plots/pcs
-montage \
-  throughput_mit_0.4_spec_window_0.25_obj1024.png \
-  throughput_mit_0.4_spec_window_0.5_obj1024.png \
-  throughput_mit_0.4_spec_window_1.0_obj1024.png \
-  throughput_mit_0.1_spec_window_0.25_obj1024.png \
-  throughput_mit_0.1_spec_window_0.5_obj1024.png \
-  throughput_mit_0.1_spec_window_1.0_obj1024.png \
-  -tile 3x2 -geometry +2+2 fig7.png
-

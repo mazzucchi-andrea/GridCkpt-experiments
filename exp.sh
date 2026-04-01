@@ -5,28 +5,6 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-# --- Requirements Checking ---
-
-required_commands=(gcc make bc awk gnuplot numactl)
-
-for cmd in "${required_commands[@]}"
-do
-  if ! command -v "$cmd" &> /dev/null
-  then
-    echo "Error: $cmd could not be found."
-    echo "Please install $cmd to run this script."
-    exit 1
-  fi
-done
-
-# Check for ImageMagick
-if ! command -v convert &> /dev/null
-then
-  echo "Error: ImageMagick could not be found."
-  echo "Please install ImageMagick to run this script."
-  exit 1
-fi
-
 # --- Experiments Functions ---
 
 run_kick() {
@@ -44,6 +22,7 @@ run_instr_cost() {
   echo "Running instr_cost experiments..."
   cd Checkpoint
   taskset -c 0 ./instr_cost_exp.sh
+  ./figures.sh
   cd ..
   mkdir -p figures
   cp Checkpoint/plots/ckpt_comparison_size_1MB_grid_32_chunk_32_ops_1000.png figures/fig4.png
@@ -54,6 +33,7 @@ run_phold() {
   echo "Running PHOLD experiments..."
   cd PARSIR
   ./phold.sh
+  ./figures.sh phold
   cd ..
   mkdir -p figures
   mv PARSIR/plots/phold/fig6.png figures/fig6.png
@@ -63,6 +43,7 @@ run_pcs() {
   echo "Running PCS experiments..."
   cd PARSIR
   ./pcs.sh
+  ./figures.sh pcs
   cd ..
   mkdir -p figures
   mv PARSIR/plots/pcs/fig7.png figures/fig7.png
@@ -87,22 +68,21 @@ run_figures() {
 # --- Remove Artifacts ---
 
 run_clean() {
-  echo "Removing all artifacts produced..."
+  echo "Removing all plots and figures produced..."
   rm -rf ./figures
   cd Checkpoint
   rm -rf ./plots
   cd MVM_CHUNK
-  rm -f ./chunk_repeat_test_results.csv ./chunk_test_results.csv
+  #rm -f ./chunk_repeat_test_results.csv ./chunk_test_results.csv
   make clean
   cd ..
   cd MVM_GRID_CKPT
-  rm -f ./ckpt_repeat_test_results.csv ./ckpt_test_results.csv
+  #rm -f ./ckpt_repeat_test_results.csv ./ckpt_test_results.csv
   make clean
   cd ../..
   cd ./PARSIR
   rm -rf ./plots
-  rm -f ./phold.csv
-  rm -f ./pcs.csv
+  #rm -f ./phold.csv ./pcs.csv
   cd build
   make clean
 }
