@@ -16,9 +16,6 @@ PCS_TARGET_FUNCTIONS = \""<ProcessEvent>:","<allocation>:","<deallocation>:","<f
 PCS_TARGET_MODULES = ../models/pcs/application.c
 PCS_LIBS = "-lm -lpthread -lnuma"
 
-HIGHWAY_TARGET_FUNCTIONS = \""<add_car>:","<del_car>:","<traversal>:","<ProcessEvent>:"\"
-HIGHWAY_TARGET_MODULES = ../models/highway/application.c
-
 #run
 THREADS=8
 OBJECTS=1024
@@ -117,18 +114,13 @@ pcs: runtime
 	cd ../models/pcs ; make $(PCS_FLAGS)
 	gcc -o ../bin/PARSIR-simulator ../lib/PARSIR-runtime.o -I../include -lpthread -lnuma ../models/pcs/pcs.o -lm
 
-highway: runtime
-	@if [ ! -d ../bin ]; then mkdir -p ../bin; fi
-	cd ../models/highway ; make
-	gcc -g -o ../bin/PARSIR-simulator ../lib/PARSIR-runtime.o -I../include -lpthread -lnuma ../models/highway/highway.o
-
 phold_grid_ckpt: runtime_grid_ckpt
 	@if [ ! -d ../bin ]; then mkdir -p ../bin; fi
 	cd ../MVM_GRID_CKPT ; make checks backup-files file-rewriting TARGET_MODULES=$(PHOLD_TARGET_MODULES) TARGET_FUNCTIONS=$(PHOLD_TARGET_FUNCTIONS) ALLOCATOR_AREA_SIZE=$(MAX_MEMORY) MOD=$(MOD)
 	cd ../models/phold ; make grid_ckpt $(PHOLD_FLAGS)
 	ld -r ../models/phold/phold.o ../lib/PARSIR-runtime.o -I../include -I../MVM_GRID_CKPT/include -o ../bin/PARSIR-simulator.o
 	cd ../MVM_GRID_CKPT ; make compile-and-link restore-files MOD=$(MOD) ALLOCATOR_AREA_SIZE=$(MAX_MEMORY) TARGET_MODULES=$(PHOLD_TARGET_MODULES) TARGET_FUNCTIONS=$(PHOLD_TARGET_FUNCTIONS) ALLOCATOR_AREA_SIZE=$(MAX_MEMORY) MOD=$(MOD)
-	@echo MVM_GRID_CKPT CKPT applied to PARSIR
+	@echo MVM_GRID_CKPT applied to PARSIR
 
 pcs_grid_ckpt: runtime_grid_ckpt
 	@if [ ! -d ../bin ]; then mkdir -p ../bin; fi
@@ -136,15 +128,8 @@ pcs_grid_ckpt: runtime_grid_ckpt
 	cd ../models/pcs ; make grid_ckpt $(PCS_FLAGS)
 	ld -r ../models/pcs/pcs.o ../lib/PARSIR-runtime.o -I../include -I../MVM_GRID_CKPT/include -o ../bin/PARSIR-simulator.o
 	cd ../MVM_GRID_CKPT ; make compile-and-link restore-files MOD=$(MOD) ALLOCATOR_AREA_SIZE=$(MAX_MEMORY) TARGET_MODULES=$(PCS_TARGET_MODULES) TARGET_FUNCTIONS=$(PCS_TARGET_FUNCTIONS) LIBS=$(PCS_LIBS) ALLOCATOR_AREA_SIZE=$(MAX_MEMORY) MOD=$(MOD)
-	@echo MVM_GRID_CKPT CKPT applied to PARSIR
+	@echo MVM_GRID_CKPT applied to PARSIR
 
-highway_grid_ckpt: runtime_grid_ckpt
-	@if [ ! -d ../bin ]; then mkdir -p ../bin; fi
-	cd ../MVM_GRID_CKPT ; make checks backup-files file-rewriting TARGET_MODULES=$(HIGHWAY_TARGET_MODULES) TARGET_FUNCTIONS=$(HIGHWAY_TARGET_FUNCTIONS) ALLOCATOR_AREA_SIZE=$(MAX_MEMORY) MOD=$(MOD)
-	cd ../models/highway ; make grid_ckpt
-	ld -r ../models/highway/highway.o ../lib/PARSIR-runtime.o -I../include -I../MVM_GRID_CKPT/include -o ../bin/PARSIR-simulator.o
-	cd ../MVM_GRID_CKPT ; make compile-and-link restore-files MOD=$(MOD) ALLOCATOR_AREA_SIZE=$(MAX_MEMORY) TARGET_MODULES=$(HIGHWAY_TARGET_MODULES) TARGET_FUNCTIONS=$(HIGHWAY_TARGET_FUNCTIONS) ALLOCATOR_AREA_SIZE=$(MAX_MEMORY) MOD=$(MOD)
-	@echo MVM_GRID_CKPT CKPT applied to PARSIR
 
 phold_chunk_ckpt: runtime_chunk_ckpt
 	@if [ ! -d ../bin ]; then mkdir -p ../bin; fi
@@ -160,14 +145,6 @@ pcs_chunk_ckpt: runtime_chunk_ckpt
 	cd ../models/pcs ; make chunk_ckpt $(PCS_FLAGS)
 	ld -r ../models/pcs/pcs.o ../lib/PARSIR-runtime.o -I../include -I../MVM_CHUNK/include -o ../bin/PARSIR-simulator.o
 	cd ../MVM_CHUNK ; make compile-and-link restore-files TARGET_MODULES=$(PCS_TARGET_MODULES) TARGET_FUNCTIONS=$(PCS_TARGET_FUNCTIONS) LIBS=$(PCS_LIBS) ALLOCATOR_AREA_SIZE=$(MAX_MEMORY) MOD=$(MOD)
-	@echo MVM_CHUNK applied to PARSIR
-
-highway_chunk_ckpt: runtime_chunk_ckpt
-	@if [ ! -d ../bin ]; then mkdir -p ../bin; fi
-	cd ../MVM_CHUNK ; make checks backup-files file-rewriting TARGET_MODULES=$(HIGHWAY_TARGET_MODULES) TARGET_FUNCTIONS=$(HIGHWAY_TARGET_FUNCTIONS) ALLOCATOR_AREA_SIZE=$(MAX_MEMORY) MOD=$(MOD)
-	cd ../models/highway ; make chunk_ckpt
-	ld -r ../models/highway/highway.o ../lib/PARSIR-runtime.o -I../include -I../MVM_CHUNK/include -o ../bin/PARSIR-simulator.o
-	cd ../MVM_CHUNK ; make compile-and-link restore-files TARGET_MODULES=$(HIGHWAY_TARGET_MODULES) TARGET_FUNCTIONS=$(HIGHWAY_TARGET_FUNCTIONS) ALLOCATOR_AREA_SIZE=$(MAX_MEMORY) MOD=$(MOD)
 	@echo MVM_CHUNK applied to PARSIR
 
 phold_full_ckpt: runtime_full_ckpt
