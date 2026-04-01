@@ -24,11 +24,9 @@ ckpt_types  = "grid_ckpt chunk_ckpt full_ckpt"
 set style data yerrorlines
 
 # Define point styles for each checkpoint type
-set style line 1 lw 2 pt 6  ps 3.0  # grid_ckpt: open circle
-set style line 2 lw 2 pt 4  ps 3.0  # grid_ckpt_set: open square
-set style line 3 lw 2 pt 8  ps 3.0  # chunk_set_ckpt: open triangle
-set style line 4 lw 2 pt 12 ps 3.0  # chunk_save_ckpt: open diamond
-set style line 5 lw 2 pt 14 ps 3.0  # full_ckpt: open pentagon
+set style line 1 lw 2 pt 6 ps 3.0  # grid_ckpt: open circle
+set style line 2 lw 2 pt 4 ps 3.0  # chunk_ckpt: open square
+set style line 3 lw 2 pt 8 ps 3.0  # full_ckpt: open triangle
 
 set title sprintf("PCS (MIT = %s, Speculative Window %s)", ARG1, ARG2)
 set xlabel "Threads"

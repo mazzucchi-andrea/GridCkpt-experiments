@@ -5,8 +5,6 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-set -euo pipefail
-
 LOOKAHEAD=(0.25 0.5 1.0)
 
 # Detect total CPU threads and compute 25%, 50%, 100%

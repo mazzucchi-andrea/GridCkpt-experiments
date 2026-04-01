@@ -68,6 +68,22 @@ run_pcs() {
   mv PARSIR/plots/pcs/fig7.png figures/fig7.png
 }
 
+# --- Figures ---
+
+run_figures() {
+  mkdir -p figures
+  cd Checkpoint
+  ./figures.sh
+  cd ..
+  cp Checkpoint/plots/ckpt_comparison_size_1MB_grid_32_chunk_32_ops_1000.png figures/fig4.png
+  cp Checkpoint/plots/ckpt_comparison_size_4MB_grid_256_chunk_256_ops_1000.png figures/fig5.png
+  cd PARSIR
+  ./figures.sh
+  cd ..
+  mv PARSIR/plots/phold/fig6.png figures/fig6.png
+  mv PARSIR/plots/pcs/fig7.png figures/fig7.png
+}
+
 # --- Remove Artifacts ---
 
 run_clean() {
@@ -114,12 +130,15 @@ else
       pcs)
         run_pcs
         ;;
+      figures)
+        run_figures
+        ;;
       clean)
         run_clean
         ;;
       *)
         echo "Unknown test: $arg"
-        echo "Valid options: kick, instr_cost, phold, pcs, clean"
+        echo "Valid options: kick, instr_cost, phold, pcs, figures, clean"
         exit 1
         ;;
     esac

@@ -30,6 +30,9 @@
 #ifndef M
 #define M 1
 #endif
+#ifndef COMMITTED
+#define COMMITTED 0
+#endif
 
 double get_t_value(int df) {
     double t_table[] = {12.706, 4.303, 3.182, 2.776, 2.571, 2.447, 2.365, 2.306, 2.262, 2.228,
@@ -66,8 +69,9 @@ static void usage(const char *prog) {
             "  -t <threads>  Number of threads      (default: %d)\n"
             "  -s <spec>     Speculation window     (default: %.2f)\n"
             "  -o <objects>  Number of objects      (default: %d)\n"
-            "  -m <m>        M value                (default: %d)\n",
-            prog, RUN, DURATION, THREADS, (double)SPEC, OBJECTS, M);
+            "  -m <m>        M value                (default: %d)\n"
+            "  -c <0|1>      Use events(0) or committed(1) for throughput (default: %d)\n",
+            prog, RUN, DURATION, THREADS, (double)SPEC, OBJECTS, M, COMMITTED);
 }
 
 int main(int argc, char *argv[]) {
@@ -77,6 +81,7 @@ int main(int argc, char *argv[]) {
     double spec = SPEC;
     int objects = OBJECTS;
     int m = M;
+    int use_committed = COMMITTED;
 
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[i], "-r") == 0 && i + 1 < argc) {
@@ -91,6 +96,8 @@ int main(int argc, char *argv[]) {
             objects = atoi(argv[++i]);
         } else if (strcmp(argv[i], "-m") == 0 && i + 1 < argc) {
             m = atoi(argv[++i]);
+        } else if (strcmp(argv[i], "-c") == 0 && i + 1 < argc) {
+            use_committed = atoi(argv[++i]);
         } else {
             fprintf(stderr, "Unknown or incomplete argument: %s\n", argv[i]);
             usage(argv[0]);
@@ -103,8 +110,9 @@ int main(int argc, char *argv[]) {
            "- Threads = %d;\n"
            "- Speculation Window = %lf;\n"
            "- Objects = %d;\n"
-           "- M = %d.\n",
-           run, threads, spec, objects, m);
+           "- M = %d;\n"
+           "- Use Committed = %d.\n",
+           run, threads, spec, objects, m, use_committed);
 
     double *throughputs = malloc(run * sizeof(double));
     double *rb_spec_w = malloc(run * sizeof(double));
@@ -129,29 +137,20 @@ int main(int argc, char *argv[]) {
         fgets(line, MAX_LINE, input_file); // Skip header
         while (fgets(line, MAX_LINE, input_file) && count < run) {
             char ckpt_type[64];
-            int t, obj, m_value, epochs, rollbacks, events, filtered;
+            int t, obj, m_value, epochs, rollbacks, events, committed, filtered;
             double spec_window;
 
-            sscanf(line, "%[^,],%d,%lf,%d,%d,%d,%d,%d,%d", ckpt_type, &t, &spec_window, &obj, &m_value,
-                   &epochs, &rollbacks, &events, &filtered);
+            sscanf(line, "%[^,],%d,%lf,%d,%d,%d,%d,%d,%d,%d", ckpt_type, &t, &spec_window, &obj, &m_value,
+                   &epochs, &rollbacks, &events, &committed, &filtered);
 
-            /* if (i < 2) {
-                if (strcmp(ckpt_type, ckpt_types[i]) || t != threads || spec_window != spec || obj != objects ||
-                    m_value != m) {
-                    continue;
-                }
-            } else { */
-                if (strcmp(ckpt_type, ckpt_types[i]) || t != threads || spec_window != spec || obj != objects ||
-                    m_value != m) {
-                    /* printf("Invalid %s,%d,%lf,%d,%d,%d,%d,%d,%d\n", ckpt_type, t, spec_window, obj, m_value, epochs,
-                           rollbacks, events, filtered); */
-                    continue;
-                }
-            //}
-            /* printf("Valid %s,%d,%lf,%d,%d,%d,%d,%d,%d\n", ckpt_type, t, spec_window, obj, m_value, epochs,
-                           rollbacks, events, filtered); */
+            if (strcmp(ckpt_type, ckpt_types[i]) || t != threads || spec_window != spec || obj != objects ||
+                m_value != m) {
+                continue;
+            }
 
-            throughputs[count] = (double)events / (double)duration;
+            // Use committed or events based on the -c flag
+            int count_value = use_committed ? committed : events;
+            throughputs[count] = (double)count_value / (double)duration;
             rb_spec_w[count] = (epochs > 0) ? (double)rollbacks / (double)epochs : (double)rollbacks;
             count++;
         }
