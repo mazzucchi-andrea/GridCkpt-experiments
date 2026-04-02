@@ -45,13 +45,15 @@ For running experiments, processing data and generating figures:
 * ```gnuplot```     (https://www.gnuplot.info/)
 * ```ImageMagick``` (https://imagemagick.org)
 
-Run ```./dep.sh``` to check and install all the dependecies.
+Run ```./dep.sh``` to check and install all the dependecies. 
+(Tested on Ubuntu, Fedora and Manjaro)
 
 ## Kick the tires instructions
 
 1. Clone the repository: ```git clone https://github.com/mazzucchi-andrea/GridCkpt-experiments```
 2. Move to the artifact folder: ```cd GridCkpt-experiments```
-3. Run small tests (~8m): ```./exp.sh kick```
+3. Run ```./dep.sh```
+4. Run small tests (~8m): ```./exp.sh kick```
 
 ## Structure of the artifact
 
@@ -68,11 +70,12 @@ GridCkpt/
 ## License
 
 The software is released under the GPL-3.0 license.
+
 The licensing is compliant with version 3.3 of the REUSE specification (https://reuse.software/spec-3.3/).
 
 ## Article claims
 
-The article has three major claims:
+The article has two major claims:
 
 * C1: the overhead of the instrumentation is near-zero and constant w.r.t. write ratio and state size
 * C2: Grid Checkpointing outperfoms literature cornerstone solutions with both benchmarks (PHOLD) and real-world case studies (PCS)
@@ -122,3 +125,7 @@ All scripts have been tested by running them from the following path:
   ```GridCkpt/```
 
 pcs and phold runs using 25%, 50% and 100% of the available CPUs
+
+## Available badge
+
+DOI: https://doi.org/10.5281/zenodo.19389887
