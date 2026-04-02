@@ -29,7 +29,6 @@ T50=$(( TOTAL_THREADS / 2 ))
 [[ $T25 -lt 1 ]] && T25=1
 [[ $T50 -lt 1 ]] && T50=1
 THREADS=($T25 $T50 $TOTAL_THREADS)
-THREADS=(10 20 40)
 
 RUN=5
 WARMUP=10

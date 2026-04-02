@@ -5,7 +5,7 @@
 
 set datafile separator comma
 set datafile missing "NaN"
-set terminal png size 1200,800 font 'Arial,26'
+set terminal png size 1200,800 font 'Arial,26' noenhanced
 set key inside right top
 set grid
 

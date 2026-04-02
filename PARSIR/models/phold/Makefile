@@ -26,16 +26,16 @@ all:
 	$(CC) $(SRCS) $(CFLAGS) -o $(TARGET) $(RUN_FLAGS)
 	ld -r $(TARGET) --wrap=malloc --wrap=free -o phold.o
 
+grid_ckpt:
+	$(CC) $(SRCS) $(CFLAGS) $(GRID_CKPT_FLAGS) $(RUN_FLAGS) -o $(TARGET) 
+	ld -r $(TARGET) --wrap=malloc --wrap=free -o phold.o
+
 chunk_ckpt:
 	$(CC) $(SRCS) $(CFLAGS) $(CHUNK_CKPT_FLAGS) $(RUN_FLAGS) -o $(TARGET)
 	ld -r $(TARGET) --wrap=malloc --wrap=free -o phold.o
 
 full_ckpt:
 	$(CC) $(SRCS) $(CFLAGS) $(FULL_CKPT_FLAGS) $(RUN_FLAGS) -o $(TARGET)
-	ld -r $(TARGET) --wrap=malloc --wrap=free -o phold.o
-
-grid_ckpt:
-	$(CC) $(SRCS) $(CFLAGS) $(GRID_CKPT_FLAGS) $(RUN_FLAGS) -o $(TARGET) 
 	ld -r $(TARGET) --wrap=malloc --wrap=free -o phold.o
 
 clean:
